@@ -1,0 +1,63 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Production build artifacts
+dist/
+build/
+.next/ # For Next.js projects
+out/ # For Next.js static exports
+.parcel-cache/ # For Parcel bundler
+
+# Development and testing
+.env
+.env.*
+.DS_Store
+.nyc_output/
+.temp/
+coverage/
+*.seed
+*.sqlite
+*.sqlite3
+*.sublime-project
+*.sublime-workspace
+*.vscode/
+.idea/
+.project
+.settings/
+.classpath
+.c9/
+*.swp
+*.bak
+*.swo
+
+# Editor-specific files
+.vscode/
+.idea/
+.history/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Misc
+.npm/
+.yarn/
+*.tgz
+*.zip
+*.rar
+*.7z
+*.gz
+
+# Optional: If you are using a specific framework or tool
+# For example, if you are using Electron
+# release/
+# build/
