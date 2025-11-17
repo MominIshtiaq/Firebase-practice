@@ -19,6 +19,15 @@ import {
   // This method will help us signOut the user who is currently using how application
   // https://firebase.google.com/docs/auth/web/password-auth#next_stops for more information
   signOut,
+
+  // For each of your app's pages that need information about the signed-in user, attach an observer to the global authentication object.
+  // This observer gets called whenever the user's sign-in state changes.
+  // Attach the observer using the onAuthStateChanged method. When a user successfully signs in, you can get information about the user in the observer.
+  onAuthStateChanged,
+
+  // This constructure function will let us create an instance of the Firebase Google Auth provider to use in our application
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 
 // /* === Firebase Setup === */
@@ -32,6 +41,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 // By using this auth object, we'll be able to do signing up to user and signing in user
 const auth = getAuth(app);
+// By using this we have create the instance of google provider
+const provider = new GoogleAuthProvider();
 
 // app have an options object that will have all the value that we have assigned in the firebaseConfig
 // console.log(app.options.apiKey) => AIzaSyCduBICpjQ7QtusKfjKja34M5LnmFltfDY
@@ -67,14 +78,43 @@ signOutButtonEl.addEventListener("click", authSignOut);
 
 /* === Main Code === */
 
-showLoggedOutView();
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    showLoggedInView();
+  } else {
+    showLoggedOutView();
+  }
+});
 
 /* === Functions === */
 
 /* = Functions - Firebase - Authentication = */
 
 function authSignInWithGoogle() {
-  console.log("Sign in with Google");
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      // const credential = GoogleAuthProvider.credentialFromResult(result);
+      // const token = credential.accessToken;
+      // The signed-in user info.
+      // const user = result.user;
+      // IdP data available using getAdditionalUserInfo(result)
+      // ...
+      console.log("Signed in with Google");
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      // const errorCode = error.code;
+      const errorMessage = error.message;
+      // The email of the user's account used.
+      // const email = error.customData.email;
+      // The AuthCredential type that was used.
+      // const credential = GoogleAuthProvider.credentialFromError(error);
+      console.error(
+        "Error message while sign in using google provider",
+        errorMessage
+      );
+    });
 }
 
 function authSignInWithEmail() {
@@ -85,7 +125,7 @@ function authSignInWithEmail() {
     .then((userCredential) => {
       // const user = userCredential.user;
       clearAuthFields();
-      showLoggedInView();
+      // showLoggedInView(); // Now we don't need this here as onAuthStateChanged function will handle this
     })
     .catch((error) => {
       console.error("error message while signing user", error.message);
@@ -101,7 +141,7 @@ function authCreateAccountWithEmail() {
     .then((userCredential) => {
       // const user = userCredential.user;
       clearAuthFields();
-      showLoggedInView();
+      // showLoggedInView(); // Now we don't need this here as onAuthStateChanged function will handle this
     })
     .catch((error) => {
       console.error("error message while creating user", error.message);
@@ -111,7 +151,7 @@ function authCreateAccountWithEmail() {
 function authSignOut() {
   signOut(auth)
     .then(() => {
-      showLoggedOutView();
+      // showLoggedOutView(); // Now we don't need this here as onAuthStateChanged function will handle this
     })
     .catch((error) => {
       console.error("error message while signout", error.message);
