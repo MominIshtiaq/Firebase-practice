@@ -68,10 +68,10 @@ const signInButtonEl = document.getElementById("sign-in-btn");
 const createAccountButtonEl = document.getElementById("create-account-btn");
 const signOutButtonEl = document.getElementById("sign-out-btn");
 
+const userProfilePictureEl = document.getElementById("user-profile-picture");
 /* == UI - Event Listeners == */
 
 signInWithGoogleButtonEl.addEventListener("click", authSignInWithGoogle);
-
 signInButtonEl.addEventListener("click", authSignInWithEmail);
 createAccountButtonEl.addEventListener("click", authCreateAccountWithEmail);
 signOutButtonEl.addEventListener("click", authSignOut);
@@ -81,6 +81,7 @@ signOutButtonEl.addEventListener("click", authSignOut);
 onAuthStateChanged(auth, (user) => {
   if (user) {
     showLoggedInView();
+    showProfilePicture(userProfilePictureEl, user);
   } else {
     showLoggedOutView();
   }
@@ -185,4 +186,48 @@ function clearInputField(field) {
 function clearAuthFields() {
   clearInputField(emailInputEl);
   clearInputField(passwordInputEl);
+}
+
+function extractName(email) {
+  const local = email.split("@")[0]; // before @
+  // Split into sequences of letters, ignoring digits
+  const parts = local.match(/[a-zA-Z]+/g);
+  if (!parts) return "";
+  // Combine parts with space
+  return parts.join(" ");
+}
+
+function getInitials(name) {
+  return name
+    .trim()
+    .split(/\s+/) // split on spaces
+    .map((part) => part[0].toUpperCase())
+    .join("");
+}
+
+function createDivElementAndAppend(parentElement, text) {
+  const div = document.createElement("div");
+  div.classList.add("user-initials");
+  div.textContent = text;
+  parentElement.append(div);
+}
+
+function showProfilePicture(imgElementContainer, user) {
+  imgElementContainer.innerHTML = "";
+  const { photoURL, displayName, email } = user;
+
+  if (photoURL) {
+    const img = document.createElement("img");
+    img.classList.add("user-photo");
+    img.src = photoURL;
+    img.alt = email || "User photo";
+    imgElementContainer.append(img);
+  } else if (displayName) {
+    const initials = getInitials(displayName);
+    createDivElementAndAppend(imgElementContainer, initials);
+  } else {
+    const nameFromEmail = extractName(email);
+    const initials = getInitials(nameFromEmail);
+    createDivElementAndAppend(imgElementContainer, initials);
+  }
 }

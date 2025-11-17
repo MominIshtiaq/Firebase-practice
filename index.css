@@ -71,6 +71,12 @@ section {
   width: 100%;
 }
 
+.app-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3em;
+}
+
 #logged-out-view .container {
   gap: 2em;
 }
@@ -94,6 +100,23 @@ nav {
 
 .icon-img-btn:hover {
   filter: invert(0.5);
+}
+
+/* === User Section === */
+
+.user-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8em;
+}
+
+.user-section .parent-elem {
+  width: 3.75em;
+  height: 3.75em;
+  border-radius: 100%;
+  border: 1px solid var(--dark-color);
+  overflow: hidden;
 }
 
 /* === Common for elements === */
@@ -197,4 +220,21 @@ button:hover {
 
 #logged-in-view {
   display: none;
+}
+
+.user-initials {
+  background-color: #1ecbe1;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  font-size: 24px;
+}
+
+.user-photo {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
 }
