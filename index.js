@@ -28,6 +28,9 @@ import {
   // This constructure function will let us create an instance of the Firebase Google Auth provider to use in our application
   GoogleAuthProvider,
   signInWithPopup,
+
+  // This function allows us to update the created user profile information as the name suggest
+  updateProfile,
 } from "firebase/auth";
 
 // /* === Firebase Setup === */
@@ -69,12 +72,19 @@ const createAccountButtonEl = document.getElementById("create-account-btn");
 const signOutButtonEl = document.getElementById("sign-out-btn");
 
 const userProfilePictureEl = document.getElementById("user-profile-picture");
+const userGreetingEl = document.getElementById("user-greeting");
+
+const displayNameInputEl = document.getElementById("display-name-input");
+const photoURLInputEl = document.getElementById("photo-url-input");
+const updateProfileButtonEl = document.getElementById("update-profile-btn");
+
 /* == UI - Event Listeners == */
 
 signInWithGoogleButtonEl.addEventListener("click", authSignInWithGoogle);
 signInButtonEl.addEventListener("click", authSignInWithEmail);
 createAccountButtonEl.addEventListener("click", authCreateAccountWithEmail);
 signOutButtonEl.addEventListener("click", authSignOut);
+updateProfileButtonEl.addEventListener("click", authUpdateProfile);
 
 /* === Main Code === */
 
@@ -82,6 +92,7 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     showLoggedInView();
     showProfilePicture(userProfilePictureEl, user);
+    showUserGreeting(userGreetingEl, user);
   } else {
     showLoggedOutView();
   }
@@ -159,6 +170,25 @@ function authSignOut() {
     });
 }
 
+function authUpdateProfile() {
+  const updatedName = displayNameInputEl.value;
+  const updatedProfilePic = photoURLInputEl.value;
+
+  updateProfile(auth.currentUser, {
+    displayName: updatedName,
+    photoURL: updatedProfilePic,
+  })
+    .then(() => {
+      console.log("User profile updated successfully");
+    })
+    .catch((error) => {
+      console.error(
+        "Error message while updating user information",
+        error.message
+      );
+    });
+}
+
 /* == Functions - UI Functions == */
 
 function showLoggedOutView() {
@@ -229,5 +259,15 @@ function showProfilePicture(imgElementContainer, user) {
     const nameFromEmail = extractName(email);
     const initials = getInitials(nameFromEmail);
     createDivElementAndAppend(imgElementContainer, initials);
+  }
+}
+
+function showUserGreeting(userGreetingEl, user) {
+  const { displayName } = user;
+  if (displayName) {
+    const userName = displayName.split(" ")[0];
+    userGreetingEl.textContent = `Hey ${userName}, how are you?`;
+  } else {
+    userGreetingEl.textContent = "Hey friend, how are you?";
   }
 }
