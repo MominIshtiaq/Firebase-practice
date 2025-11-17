@@ -15,6 +15,10 @@ import {
   // This function takes three arguments auth, email and password
   // This auth is the instance of Firebase authentication service we get from getAuth method. like const auth = getAuth(app)
   signInWithEmailAndPassword,
+
+  // This method will help us signOut the user who is currently using how application
+  // https://firebase.google.com/docs/auth/web/password-auth#next_stops for more information
+  signOut,
 } from "firebase/auth";
 
 // /* === Firebase Setup === */
@@ -51,6 +55,7 @@ const passwordInputEl = document.getElementById("password-input");
 
 const signInButtonEl = document.getElementById("sign-in-btn");
 const createAccountButtonEl = document.getElementById("create-account-btn");
+const signOutButtonEl = document.getElementById("sign-out-btn");
 
 /* == UI - Event Listeners == */
 
@@ -58,6 +63,7 @@ signInWithGoogleButtonEl.addEventListener("click", authSignInWithGoogle);
 
 signInButtonEl.addEventListener("click", authSignInWithEmail);
 createAccountButtonEl.addEventListener("click", authCreateAccountWithEmail);
+signOutButtonEl.addEventListener("click", authSignOut);
 
 /* === Main Code === */
 
@@ -78,6 +84,7 @@ function authSignInWithEmail() {
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // const user = userCredential.user;
+      clearAuthFields();
       showLoggedInView();
     })
     .catch((error) => {
@@ -93,10 +100,21 @@ function authCreateAccountWithEmail() {
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // const user = userCredential.user;
+      clearAuthFields();
       showLoggedInView();
     })
     .catch((error) => {
       console.error("error message while creating user", error.message);
+    });
+}
+
+function authSignOut() {
+  signOut(auth)
+    .then(() => {
+      showLoggedOutView();
+    })
+    .catch((error) => {
+      console.error("error message while signout", error.message);
     });
 }
 
@@ -118,4 +136,13 @@ function showElement(element) {
 
 function hideElement(element) {
   element.style.display = "none";
+}
+
+function clearInputField(field) {
+  field.value = "";
+}
+
+function clearAuthFields() {
+  clearInputField(emailInputEl);
+  clearInputField(passwordInputEl);
 }
